@@ -1,5 +1,7 @@
 REBAR=rebar3
 RUN_EQC=erl -pa _build/default/lib/enacl/ebin -noshell -s enacl_eqc -s init stop
+HASH=018d79fe0a045cca07331d37bd0cb57b2e838c51bc48fd837a1472e50068bbea \*libsodium-1.0.19.tar.gz
+
 
 .PHONY: compile
 compile:
@@ -15,7 +17,9 @@ libsodium/Makefile: libsodium/configure
 	(cd libsodium; ./configure --prefix=`pwd`/install --disable-pie)
 
 libsodium/configure:
-	curl -L https://github.com/jedisct1/libsodium/releases/download/1.0.19-RELEASE/libsodium-1.0.19.tar.gz | zcat | tar xf -
+	curl -OL https://github.com/jedisct1/libsodium/releases/download/1.0.19-RELEASE/libsodium-1.0.19.tar.gz
+	if [ `uname` = Darwin ]; then echo $(HASH) | shasum -a 256 -c -; else echo $(HASH) | sha256sum -c -; fi
+	tar xf libsodium-1.0.19.tar.gz
 	mv libsodium-stable libsodium
 
 .PHONY: tests
