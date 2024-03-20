@@ -11,8 +11,12 @@ libsodium: libsodium/install/lib/libsodium.a
 libsodium/install/lib/libsodium.a: libsodium/Makefile
 	(cd libsodium;  $(MAKE) -j install)
 
-libsodium/Makefile:
+libsodium/Makefile: libsodium/configure
 	(cd libsodium; ./configure --prefix=`pwd`/install --disable-pie)
+
+libsodium/configure:
+	curl -L https://github.com/jedisct1/libsodium/releases/download/1.0.19-RELEASE/libsodium-1.0.19.tar.gz | zcat | tar xf -
+	mv libsodium-stable libsodium
 
 .PHONY: tests
 tests:
