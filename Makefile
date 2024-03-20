@@ -5,6 +5,15 @@ RUN_EQC=erl -pa _build/default/lib/enacl/ebin -noshell -s enacl_eqc -s init stop
 compile:
 	$(REBAR) compile
 
+.PHONY: libsodium
+libsodium: libsodium/install/lib/libsodium.a
+
+libsodium/install/lib/libsodium.a: libsodium/Makefile
+	(cd libsodium;  $(MAKE) -j install)
+
+libsodium/Makefile:
+	(cd libsodium; ./configure --prefix=`pwd`/install --disable-pie)
+
 .PHONY: tests
 tests:
 	$(REBAR) ct
